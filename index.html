@@ -1,184 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WET assignment curd operations</title>
- <style>
- body {
-  font-family: 'Segoe UI', sans-serif;
-  background: #f0f4f8;
-  margin: 0;
-  padding: 20px;
-  color: #333;
-}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CRUD operations WET assignment</title>
+        <link rel="stylesheet" href="./CSS/bootstrap.min.css" />
+        <link rel="stylesheet" href="./CSS/style.css" />
+      /*Aqsal ahmed ( 2k22/CSM/2k22 )*/
+    </head>
+    <body>
+        <div class="container py-4 bg-prim ary">
+            <div class="w-75 mb-4 form-details p-5 mx-auto ">
+                <h2>Product Mangment System</h2>
+                <div class="form-group mb-2">
+                    <label for="productName" class="mb-2">Product Name </label>
+                    <input type="text " class="form-control" id="productName" />
+                </div>
+                <div class="form-group mb-2">
+                    <label for="productPrice" class="mb-2">Product Price </label>
+                    <input type="text " class="form-control" id="productPrice" />
+                </div>
+                <div class="form-group mb-2">
+                    <label for="productCategory" class="mb-2">Product Category </label>
+                    <input type="text " class="form-control" id="productCategory" />
+                </div>
+                <div class="form-group mb-2">
+                    <label for="productDescription" class="mb-2">Product Description </label>
+                    <textarea class="form-control" id="productDescription"></textarea>
+                </div>
 
-.container {
-  max-width: 800px;
-  margin: auto;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  padding: 30px;
-}
+                <button class="btn btn-outline-info" onclick="getProduct()" id="myButton">Add Product</button>
+            </div>
 
-h1, h2 {
-  text-align: center;
-}
+            <div class="form-group mb-5 w-75 mx-auto">
+                <h4>Search</h4>
+                <input oninput="searchProduct()" type="search" class="form-control" id="searchInput" />
+            </div>
+            /*Aqsal ahmed ( 2k22/CSM/2k22 )*/
+            <div class="table-responsive w-75 mx-auto">
+                <table class="table">
+                    <thead>
+                        <th>Index</th>
+                        <th>productName</th>
+                        <th>productPrice</th>
+                        <th>productCategory</th>
+                        <th>productDescription</th>
+                        <th class="ps-2">Update</th>
+                        <th class="ps-2">Delete</th>
+                    </thead>
+                    <tbody id="myBody"></tbody>
+                </table>
+            </div>
+        </div>
 
-.products {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-bottom: 30px;
-}
-
-.product {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  text-align: center;
-  width: 150px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.product h3 {
-  margin: 10px 0 5px;
-}
-
-button {
-  background: #00b894;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  margin-top: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-button:hover {
-  background: #019875;
-}
-
-#cart .item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
-}
-
-#cart input {
-  width: 40px;
-  margin: 0 10px;
-  padding: 4px;
-}
-
-.remove-btn {
-  background: #d63031;
-  padding: 5px 10px;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-</style>
-  /*aqsal ahmed 2k22/csm/20*/
-</head>
-<body>
-  <div class="container">
-    <h1>🛒 Mazae Shopping Cart</h1>
-    <div class="products">
-      <div class="product">
-        <h3>🍕 Pizza</h3>
-        <p>$12</p>
-        <button onclick="addToCart('Pizza', 12)">Add</button>
-      </div>
-      <div class="product">
-        <h3>🍔 Burger</h3>
-        <p>$8</p>
-        <button onclick="addToCart('Burger', 8)">Add</button>
-      </div>
-      <div class="product">
-        <h3>🥤 Drink</h3>
-        <p>$4</p>
-        <button onclick="addToCart('Drink', 4)">Add</button>
-      </div>
-    </div>
-
-    <h2>🛍️ Your Cart</h2>
-    <div id="cart"></div>
-    <p id="total">Total: $0</p>
-  </div>
-  <script>
-  let cart = [];
-
-// Load cart from localStorage on page load
-window.onload = function () {
-  const savedCart = localStorage.getItem("cart");
-  if (savedCart) {
-    cart = JSON.parse(savedCart);
-    updateCart();
-  }
-};
-
-function addToCart(name, price) {
-  const existing = cart.find(item => item.name === name);
-  if (existing) {
-    existing.quantity++;
-  } else {
-    cart.push({ name, price, quantity: 1 });
-  }
-  saveCart();
-  updateCart();
-}
-
-function updateCart() {
-  const cartDiv = document.getElementById("cart");
-  cartDiv.innerHTML = "";
-
-  let total = 0;
-
-  cart.forEach((item, index) => {
-    total += item.price * item.quantity;
-
-    const div = document.createElement("div");
-    div.className = "item";
-
-    div.innerHTML = `
-      ${item.name} - $${item.price} x 
-      <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)">
-      = $${item.price * item.quantity}
-      <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
-    `;
-
-    cartDiv.appendChild(div);
-  });
-
-  document.getElementById("total").textContent = `Total: $${total}`;
-}
-
-// Save cart to localStorage
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-function updateQuantity(index, quantity) {
-  cart[index].quantity = parseInt(quantity);
-  saveCart();
-  updateCart();
-}
-
-function removeItem(index) {
-  cart.splice(index, 1);
-  saveCart();
-  updateCart();
-}
-
-  </script>
-</body>
+        <script src="./JS/javascript.js"></script>
+    </body>
 </html>
+
+     /*Aqsal ahmed ( 2k22/CSM/2k22 )*/
